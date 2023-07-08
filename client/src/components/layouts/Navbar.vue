@@ -20,10 +20,10 @@
                     About
                 </RouterLink>
                 <RouterLink
-                    to="/todo"
+                    to="/tasks"
                     class="px-6 py-3 uppercase font-semibold text-black hover:text-primary-600"
                 >
-                    Todo
+                    Tasks
                 </RouterLink>
             </nav>
         </div>

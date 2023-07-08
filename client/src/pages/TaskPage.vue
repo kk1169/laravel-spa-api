@@ -20,7 +20,10 @@
                 />
             </div>
         </div>
+
+        <!-- Todo Card Section -->
         <div class="flex flex-col gap-3">
+            <TaskSkeleton v-if="isLoading" />
             <TodoCard
                 v-for="(item, index) in tasks"
                 :key="index"
@@ -99,12 +102,15 @@ import ConfirmDialog from "primevue/confirmdialog";
 import Toast from "primevue/toast";
 import Task from "../components/tasks/Task.vue";
 import TodoCard from "../components/TodoCard.vue";
+import TaskSkeleton from "../components/tasks/TaskSkeleton.vue";
+import { useTaskStore } from "../store/task";
 import {
     allTasks,
     createTasks,
     updateTasks,
     deleteTasks,
 } from "../http/task-api";
+import { storeToRefs } from "pinia";
 export default {
     name: "TaskPage",
     components: {
@@ -117,12 +123,15 @@ export default {
         Toast,
         Task,
         TodoCard,
+        TaskSkeleton,
     },
     data() {
         return {
+            store: useTaskStore(),
             visibleRight: false,
             formSubmitted: false,
             isFilterBy: "",
+            isLoading: false,
             isFormShow: false,
             tasks: [],
             formAction: "add",
@@ -152,34 +161,25 @@ export default {
             this.isFormShow = !this.isFormShow;
         },
         onLoadTasks: async function () {
-            const { data } = await allTasks();
-            this.tasks = data.data;
-            console.log(this.tasks);
+            const store = useTaskStore();
+            const { taskList, taskCount, loading } = storeToRefs(store);
+            if (taskCount.value == 0) {
+                this.isLoading = true;
+                await store.fetchAllTasks();
+                this.isLoading = loading.value;
+            }
+            this.tasks = taskList.value;
         },
         addTask: async function (task) {
-            const { data } = await createTasks(task);
-            this.isFormShow = false;
-            this.onLoadTasks();
+            await this.store.createTask(task);
         },
         submitTodoForm: async function () {
-            // this.formSubmitted = true;
-            // if (this.todo.parentId !== 0) {
-            //     this.todos.forEach((e) => {
-            //         if (e.id == this.todo.parentId) {
-            //             e.child.push(this.todo)
-            //         }
-            //     })
-            // } else {
-            //     this.todos.push(this.todo)
-            // }
-            //
-            console.log(this.task);
             let message = "Task Added Successfully!";
             if (this.task.id != "") {
-                const { data } = await updateTasks(this.task.id, this.task);
+                await this.store.updateTask(this.task.id, this.task);
                 message = "Task Updated Successfully!";
             } else {
-                const { data } = await createTasks(this.task);
+                await this.store.createTask(this.task);
             }
             this.$toast.add({
                 severity: "success",
@@ -187,7 +187,6 @@ export default {
                 detail: message,
                 life: 3000,
             });
-            this.onLoadTasks();
             this.resetTodoForm();
         },
         onEditTask: function (task, index) {
@@ -201,8 +200,7 @@ export default {
                 icon: "pi pi-info-circle",
                 acceptClass: "p-button-danger",
                 accept: async () => {
-                    await deleteTasks(taskId);
-                    this.tasks.splice(index, 1);
+                    await this.store.deleteTask(index, taskId);
                     this.$toast.add({
                         severity: "success",
                         summary: "Confirmed",

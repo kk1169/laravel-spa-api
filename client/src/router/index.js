@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// import HomeView from '../views/HomeView.vue'
+import HomePage from '../pages/HomePage.vue'
 // import AboutView from '../views/AboutView.vue'
 // import MainLayout from '../components/layouts/MainLayout.vue'
 
@@ -8,14 +8,19 @@ import { createRouter, createWebHistory } from 'vue-router'
 import TaskPage from '../pages/TaskPage.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'TaskPage',
-      component: TaskPage
-    }
-  ]
+    history: createWebHistory(import.meta.env.BASE_URL),
+    routes: [
+        {
+            path: '/',
+            name: 'HomePage',
+            component: HomePage
+        },
+        {
+            path: '/tasks',
+            name: 'TaskPage',
+            component: TaskPage
+        }
+    ]
 })
 
 export default router

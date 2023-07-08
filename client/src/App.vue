@@ -1,12 +1,12 @@
 <script setup>
 import Navbar from "./components/layouts/Navbar.vue";
-import TaskPageVue from "./pages/TaskPage.vue";
+import { RouterView } from "vue-router";
 </script>
 
 <template>
     <Navbar />
     <main class="container mt-4">
-        <TaskPageVue />
+        <RouterView />
     </main>
 </template>
 
