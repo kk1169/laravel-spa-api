@@ -1,0 +1,10 @@
+.form-label{
+    @apply inline-flex font-semibold text-gray-600 text-sm mb-1;
+
+    span{
+        @apply text-red-600 ml-1;
+    }
+}
+.form-select{
+    @apply outline-none border-primary-600 px-5 py-2 border border-primary-600 rounded-full;
+}

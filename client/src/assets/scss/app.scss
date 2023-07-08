@@ -1,0 +1,33 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,regular,italic,500,500italic,700,700italic,900,900italic);
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "./common";
+
+body {
+    font-family: "Roboto", sans-serif;
+    @apply bg-slate-100;
+    min-height: 100vh;
+}
+
+//
+.app-navbar{
+    padding:0.8rem 1rem;
+    background: #fff;
+    box-shadow: 0 0 6px 0px rgba($color: #000000, $alpha: 0.1);
+}
+
+
+// app-task-card
+.app-task-card{
+    &.completed{
+        .app-task-card-title{
+            .app-task-card-text{
+                color: #ccc;
+                text-decoration: line-through;
+            }
+        }
+    }
+}
