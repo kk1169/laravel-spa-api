@@ -8,7 +8,12 @@
                 :value="onGetStatusText(task.status)"
                 :severity="onGetStatusColor(task.status)"
             ></Badge>
-            <h3>{{ task.title }}</h3>
+            <div class="flex items-center gap-6">
+                <h3>{{ task.title }}</h3>
+                <div class="text-gray-400 text-sm">
+                    {{ format_date(task.created_at) }}
+                </div>
+            </div>
         </div>
         <div class="flex gap-5">
             <button
@@ -40,6 +45,7 @@
 </template>
 <script>
 import Badge from "primevue/badge";
+import moment from "moment";
 export default {
     name: "TodoCard",
     components: {
@@ -68,6 +74,11 @@ export default {
         },
         onGetStatusColor(i) {
             return this.statusTypeColor[i];
+        },
+        format_date(value) {
+            if (value) {
+                return moment(String(value)).format("LLL");
+            }
         },
     },
 };

@@ -1,14 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '../store/auth.store'
 
 import HomePage from '../pages/HomePage.vue'
-// import AboutView from '../views/AboutView.vue'
-// import MainLayout from '../components/layouts/MainLayout.vue'
+import LoginPage from '../pages/LoginPage.vue'
+import RegisterPage from '../pages/RegisterPage.vue'
+import NotFoundPage from '../pages/errors/NotFoundPage.vue'
 
-// Todo
+// Task
 import TaskPage from '../pages/TaskPage.vue'
 
 const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         {
             path: '/',
@@ -16,35 +17,49 @@ const router = createRouter({
             component: HomePage
         },
         {
+            path: '/login',
+            name: 'LoginPage',
+            component: LoginPage,
+            meta: {
+                guest: true
+            }
+        },
+        {
+            path: '/register',
+            name: 'RegisterPage',
+            component: RegisterPage,
+            meta: {
+                guest: true
+            }
+        },
+        {
             path: '/tasks',
             name: 'TaskPage',
-            component: TaskPage
+            component: TaskPage,
+            meta: {
+                auth: true
+            }
+        },
+        {
+            path: '/:notFound(.*)',
+            name: 'error.404',
+            component: NotFoundPage
         }
-    ]
+    ],
+    history: createWebHistory(),
+})
+
+
+router.beforeEach(async (to, from) => {
+    const store = useAuthStore();
+    await store.fetchUser();
+    console.log(store.isLoggedIn);
+    if (to.meta.auth && !store.isLoggedIn) {
+        return { name: 'LoginPage', query: { redirect: to.fullPath } }
+    } else if (to.meta.guest && store.isLoggedIn) {
+        return { name: 'TaskPage' }
+    }
+
 })
 
 export default router
-
-
-// {
-//     path: '/',
-//     name: 'MainLayout',
-//     component: MainLayout,
-//     children: [
-//       {
-//         path: '/',
-//         name: 'HomeView',
-//         component: HomeView
-//       },
-//       {
-//         path: '/about',
-//         name: 'AboutView',
-//         component: AboutView
-//       },
-//       {
-//         path: '/todo',
-//         name: 'TodoList',
-//         component: TodoList
-//       }
-//     ]
-//   }

@@ -14,27 +14,55 @@
                     Home
                 </RouterLink>
                 <RouterLink
-                    to="/about"
-                    class="px-6 py-3 uppercase font-semibold text-black hover:text-primary-600"
-                >
-                    About
-                </RouterLink>
-                <RouterLink
+                    v-if="store.isLoggedIn"
                     to="/tasks"
                     class="px-6 py-3 uppercase font-semibold text-black hover:text-primary-600"
                 >
                     Tasks
                 </RouterLink>
+                <RouterLink
+                    to="/login"
+                    class="px-6 py-3 uppercase font-semibold text-black hover:text-primary-600"
+                    v-if="!store.isLoggedIn"
+                >
+                    Login
+                </RouterLink>
+                <AuthDropdown v-if="store.isLoggedIn" />
+
+                <!-- <RouterLink
+                    to=""
+                    class="px-6 py-3 uppercase font-semibold text-black hover:text-primary-600"
+                    v-if="store.isLoggedIn"
+                    @click="logout"
+                >
+                    Logout
+                </RouterLink> -->
             </nav>
         </div>
     </header>
 </template>
 <script>
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
+import { useAuthStore } from "../../store/auth.store";
+import AuthDropdown from "./AuthDropdown.vue";
+
 export default {
     name: "Navbar",
     components: {
         RouterLink,
+        AuthDropdown,
+    },
+    data() {
+        return {
+            router: useRouter(),
+            store: useAuthStore(),
+        };
+    },
+    methods: {
+        logout: async function () {
+            await this.store.handleLogout();
+            this.router.push({ name: "LoginPage" });
+        },
     },
 };
 </script>

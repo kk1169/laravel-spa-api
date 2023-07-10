@@ -104,12 +104,6 @@ import Task from "../components/tasks/Task.vue";
 import TodoCard from "../components/TodoCard.vue";
 import TaskSkeleton from "../components/tasks/TaskSkeleton.vue";
 import { useTaskStore } from "../store/task";
-import {
-    allTasks,
-    createTasks,
-    updateTasks,
-    deleteTasks,
-} from "../http/task-api";
 import { storeToRefs } from "pinia";
 export default {
     name: "TaskPage",

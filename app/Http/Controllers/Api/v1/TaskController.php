@@ -7,15 +7,27 @@ use App\Models\Task;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Resources\TaskResource;
+use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return TaskResource::collection(Task::orderBy('created_at', 'desc')->get());
+        $byDate = $request->query('byDate');
+        $query = Task::orderBy('created_at', 'desc');
+        // if(){
+        //     $byDate = ($request->query('byDate'))
+        // }
+        // if(){}
+
+        // if (isset($byDate)) {
+        //     $query->where('');
+        // }
+
+        return TaskResource::collection($query->get());
     }
 
     /**
